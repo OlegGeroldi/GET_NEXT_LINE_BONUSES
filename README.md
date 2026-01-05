@@ -91,7 +91,7 @@ The implementation uses a **static remainder buffer** approach combined with dyn
 
 #### Algorithm Overview
 
-1. **Static Remainder Array**: A static array of character pointers (`static char *remainder[OPEN_MAX]`) maintains the state between function calls. Each index corresponds to a file descriptor, allowing multiple files to be read simultaneously without interference (bonus feature).
+1. **Static Remainder Array**: A static array of character pointers (`static char *remainder[OPEN_MAX]`) maintains the state between function calls. Each index corresponds to a file descriptor, allowing multiple files to be read simultaneously without interference (bonus feature). Note that `OPEN_MAX` is defined in `<limits.h>` and represents the maximum number of files a process can have open.
 
 2. **Read-Ahead Strategy**: The function reads data from the file descriptor in chunks of `BUFFER_SIZE` bytes and accumulates it in the remainder buffer until a newline character (`\n`) is found or end-of-file is reached.
 
@@ -129,7 +129,7 @@ This algorithm was chosen for several reasons:
 
 #### Trade-offs
 
-- **Memory Usage**: The static array uses `OPEN_MAX * sizeof(char *)` bytes continuously, even when not all file descriptors are in use. This is acceptable given that `OPEN_MAX` is typically 1024 on most systems, resulting in only 8KB on 64-bit systems.
+- **Memory Usage**: The static array uses `OPEN_MAX * sizeof(char *)` bytes continuously, even when not all file descriptors are in use. This is acceptable given that `OPEN_MAX` is typically 1024 on most systems, resulting in approximately 4KB on 32-bit systems or 8KB on 64-bit systems.
 
 - **Complexity**: The bonus version with multiple file descriptors adds complexity compared to a single static pointer, but this is necessary to meet the project requirements and provides valuable real-world functionality.
 
